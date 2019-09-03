@@ -13,7 +13,7 @@ object FutureConcurrency {
 
   //val ec = ExecutionContext.global
   val ex = Executors.newFixedThreadPool(4)
-  val ec = ExecutionContext.fromExecutor(ex)
+  implicit val ec = ExecutionContext.fromExecutor(ex)
 
   def timesTwo(n: Int): Future[Int] = {
     Future {
@@ -24,7 +24,7 @@ object FutureConcurrency {
   }
 
   def timesFour(n: Int): Future[Int] = {
-    implicit val e = ec
+    //implicit val e = ec
 
     for {
       i <- timesTwo(n)
@@ -33,7 +33,7 @@ object FutureConcurrency {
   }
 
   def timesFourPar(n: Int): Future[Int] = {
-    implicit val e = ec
+    //implicit val e = ec
     val f1 = timesTwo(n)
     val f2 = timesTwo(n)
 
@@ -63,9 +63,9 @@ object FutureConcurrency {
     println(Await.result(f2, 4.seconds))
 
     val f3 = timesFourPar(4)
-    println(Await.result(f3, 3.seconds)) // try with 2.11.12
+    println(Await.result(f3, 2100.milliseconds)) // try with 2.11.12
 
-    implicit val e = ec
+    //implicit val e = ec
     val lst = List("Hello", "Beautiful", "World")
     val lstFut = lst.map(s => Future {
       println(s"Result on ${Thread.currentThread.getName()} is $r")
